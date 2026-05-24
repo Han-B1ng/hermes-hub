@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hermes.hub.mapper.TaskEventMapper">
+
+    <resultMap id="taskEventResult" type="com.hermes.hub.entity.TaskEvent">
+        <id property="id" column="id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="agentId" column="agent_id"/>
+        <result property="eventType" column="event_type"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="eventData" column="event_data"/>
+        <result property="seq" column="seq"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO task_events (task_id, agent_id, event_type, event_data, seq, created_at)
+        VALUES (#{taskId}, #{agentId},
+                #{eventType, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{eventData}, #{seq}, #{createdAt})
+    </insert>
+
+    <select id="selectByTaskId" resultMap="taskEventResult">
+        SELECT id, task_id, agent_id, event_type, event_data, seq, created_at
+        FROM task_events
+        WHERE task_id = #{taskId}
+        ORDER BY seq ASC
+    </select>
+
+    <select id="selectLatest" resultMap="taskEventResult">
+        SELECT id, task_id, agent_id, event_type, event_data, seq, created_at
+        FROM task_events
+        ORDER BY seq DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectBySeqRange" resultMap="taskEventResult">
+        SELECT id, task_id, agent_id, event_type, event_data, seq, created_at
+        FROM task_events
+        WHERE seq BETWEEN #{from} AND #{to}
+        ORDER BY seq ASC
+    </select>
+
+    <select id="countByTaskId" resultType="long">
+        SELECT COUNT(*) FROM task_events WHERE task_id = #{taskId}
+    </select>
+
+</mapper>

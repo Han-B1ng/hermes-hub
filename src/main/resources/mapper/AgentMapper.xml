@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hermes.hub.mapper.AgentMapper">
+
+    <resultMap id="agentResult" type="com.hermes.hub.entity.Agent">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="currentTaskId" column="current_task_id"/>
+        <result property="startedAt" column="started_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert">
+        INSERT INTO agents (id, name, type, status, current_task_id, started_at, created_at, updated_at)
+        VALUES (#{id}, #{name}, #{type},
+                #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+                #{currentTaskId}, #{startedAt}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="selectById" resultMap="agentResult">
+        SELECT id, name, type, status, current_task_id, started_at, created_at, updated_at
+        FROM agents
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="agentResult">
+        SELECT id, name, type, status, current_task_id, started_at, created_at, updated_at
+        FROM agents
+        ORDER BY created_at ASC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE agents
+        SET status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateCurrentTask">
+        UPDATE agents
+        SET current_task_id = #{taskId},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

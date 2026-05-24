@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hermes_hub
+    username: hermes
+    password: hermes123
+    driver-class-name: org.postgresql.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+nats:
+  server: nats://localhost:4222
+
+jwt:
+  secret: hermes-hub-super-secret-key-change-in-production-2024
+  expiration: 86400000
