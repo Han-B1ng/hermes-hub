@@ -114,8 +114,6 @@ public class OpenClawAdapter implements AgentAdapter {
             while ((line = reader.readLine()) != null) {
                 parseAndEmit(line);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.error("Error reading OpenClaw log output", e);
         }

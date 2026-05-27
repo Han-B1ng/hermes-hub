@@ -9,7 +9,7 @@ public class Agent {
     private String id;
     private String name;
     private String type;
-    private AgentStatus status;
+    private com.hermes.hub.entity.AgentStatus status;
     private String currentTaskId;
     private LocalDateTime startedAt;
     private LocalDateTime createdAt;

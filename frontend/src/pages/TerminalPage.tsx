@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getLatestEvents, type TaskEvent } from '../api/client'
-
-function formatLine(e: TaskEvent): string {
-  const ts = new Date(e.createdAt).toLocaleTimeString()
-  return `[${ts}] [${e.eventType}] ${e.agentId}: ${e.eventData}`
-}
+import { getLatestEvents } from '../api/client'
 
 export default function TerminalPage() {
   const [lines, setLines] = useState<string[]>([])
@@ -16,8 +11,11 @@ export default function TerminalPage() {
     const load = () => {
       getLatestEvents(50).then(events => {
         if (!active) return
-        setLines(events.map(formatLine))
-      })
+        setLines(events.map(e => {
+          const ts = new Date(e.createdAt).toLocaleTimeString()
+          return `[${ts}] [${e.eventType}] ${e.agentId}: ${e.eventData || ''}`
+        }))
+      }).catch(() => {})
     }
 
     load()
@@ -30,21 +28,39 @@ export default function TerminalPage() {
   }, [lines])
 
   return (
-    <div className="bg-gray-900 min-h-screen p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-white">Terminal - Live Event Stream</h1>
+    <div className="p-6 space-y-4 h-full flex flex-col">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-bold text-ctp-text">Live Event Stream</h2>
         <button
           onClick={() => setLines([])}
-          className="px-3 py-1 text-sm bg-gray-700 text-gray-300 rounded hover:bg-gray-600"
+          className="px-3 py-1 text-xs bg-ctp-surface0 text-ctp-subtext0 rounded hover:bg-ctp-surface1 transition-colors"
         >
           Clear
         </button>
       </div>
-      <div className="bg-black text-green-400 font-mono text-sm p-4 rounded-lg h-[calc(100vh-140px)] overflow-y-auto">
-        {lines.length === 0 && <span className="text-gray-600">Waiting for events...</span>}
-        {lines.map((line, i) => (
-          <div key={i}>{line}</div>
-        ))}
+
+      <div className="flex-1 bg-ctp-crust rounded-lg border border-ctp-surface1 p-4 font-mono text-sm overflow-y-auto">
+        {lines.length === 0 && (
+          <span className="text-ctp-overlay0 italic">Waiting for events...</span>
+        )}
+        {lines.map((line, i) => {
+          const isError = line.includes('[ERROR]')
+          const isWarn = line.includes('[WARNING]')
+          const isGreen = line.includes('[TASK_COMPLETED]') || line.includes('[AGENT_ONLINE]')
+          return (
+            <div
+              key={i}
+              className={`py-0.5 ${
+                isError ? 'text-ctp-red' :
+                isWarn ? 'text-ctp-peach' :
+                isGreen ? 'text-ctp-green' :
+                'text-ctp-subtext1'
+              }`}
+            >
+              {line}
+            </div>
+          )
+        })}
         <div ref={bottomRef} />
       </div>
     </div>

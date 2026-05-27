@@ -1,4 +1,4 @@
-import type { TaskEvent, EventType } from '../api/client'
+import type { TaskEvent } from '../api/client'
 
 const TYPE_COLORS: Record<string, string> = {
   TASK_CREATED: 'bg-blue-500',

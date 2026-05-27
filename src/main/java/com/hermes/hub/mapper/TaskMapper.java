@@ -17,5 +17,7 @@ public interface TaskMapper {
 
     void updateStatus(String id, TaskStatus status);
 
+    void update(Task task);
+
     List<Task> selectByAgentId(String agentId);
 }

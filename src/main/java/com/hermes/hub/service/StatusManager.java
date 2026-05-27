@@ -1,5 +1,6 @@
 package com.hermes.hub.service;
 
+import com.hermes.hub.entity.Agent;
 import com.hermes.hub.entity.AgentStatus;
 import org.springframework.stereotype.Service;
 

@@ -40,6 +40,14 @@
         WHERE id = #{id}
     </update>
 
+    <update id="update">
+        UPDATE tasks
+        SET status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+            ended_at = #{endedAt},
+            duration_ms = #{durationMs}
+        WHERE id = #{id}
+    </update>
+
     <select id="selectByAgentId" resultMap="taskResult">
         SELECT id, agent_id, title, status, started_at, ended_at, duration_ms, created_at
         FROM tasks
